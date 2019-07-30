@@ -1,7 +1,7 @@
 local ButtonGroup = {}
 local ButtonGroupMt = {__index = ButtonGroup}
 
--- TODO group-default onEnter and onLeave
+-- TODO group-default onEnter, onLeave and onDraw
 
 local function nop() end
 local mouseWasDown = false
@@ -18,7 +18,7 @@ local function within(x, y, button)
 end
 
 local function updateMouseStatus()
-  local mouseIsDown = love.mouse.isDown()
+  local mouseIsDown = love.mouse.isDown(1)
   local clicked = mouseIsDown and not mouseWasDown
   mouseWasDown = mouseIsDown
 
@@ -56,11 +56,12 @@ function ButtonGroup.new()
   return setmetatable({}, ButtonGroupMt)
 end
 
-function ButtonGroup:add(x, y, w, h, onClick, onEnter, onLeave, id)
+function ButtonGroup:add(x, y, w, h, info, onClick, onEnter, onLeave, onDraw)
   --[[
   Adds a new button to a button group.
   Buttons added later take priority when checking for a coordinate. One can
   think of them as being "on top" and blocking the ones inserted before it.
+  Buttons added later also appear on top of others on calls to draw().
   ]]
   assertButtonArgs(x, y, w, h)
 
@@ -69,10 +70,12 @@ function ButtonGroup:add(x, y, w, h, onClick, onEnter, onLeave, id)
     y = y,
     w = w,
     h = h,
+    info = info,
     onClick = onClick or nop,
     onEnter = onEnter or nop,
     onLeave = onLeave or nop,
-    id = id
+    onDraw = onDraw or nop,
+    group = self
   }
   table.insert(self, button)
 end
@@ -83,8 +86,14 @@ function ButtonGroup:update()
   updateHovered(self, newHovered)
   local clicked = updateMouseStatus()
 
-  if clicked then
+  if clicked and self.hovered then
     self.hovered:onClick()
+  end
+end
+
+function ButtonGroup:draw()
+  for _, button in ipairs(self) do
+    button:onDraw()
   end
 end
 
