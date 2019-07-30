@@ -1,8 +1,6 @@
 local ButtonGroup = {}
 local ButtonGroupMt = {__index = ButtonGroup}
 
--- TODO group-default onEnter, onLeave and onDraw
-
 local function nop() end
 local mouseWasDown = false
 
@@ -43,20 +41,25 @@ end
 local function updateHovered(buttonGroup, newHovered)
   if newHovered ~= buttonGroup.hovered then
     if buttonGroup.hovered then
-      buttonGroup.hovered:onLeave()
+      buttonGroup.onLeaveButton(buttonGroup.hovered)
     end
     buttonGroup.hovered = newHovered
     if buttonGroup.hovered then
-      buttonGroup.hovered:onEnter()
+      buttonGroup.onEnterButton(buttonGroup.hovered)
     end
   end
 end
 
-function ButtonGroup.new()
-  return setmetatable({}, ButtonGroupMt)
+function ButtonGroup.new(onEnterButton, onLeaveButton, onDrawButton)
+  local group = {
+    onEnterButton = onEnterButton,
+    onLeaveButton = onLeaveButton,
+    onDrawButton = onDrawButton
+  }
+  return setmetatable(group, ButtonGroupMt)
 end
 
-function ButtonGroup:add(x, y, w, h, info, onClick, onEnter, onLeave, onDraw)
+function ButtonGroup:add(x, y, w, h, info, onClick)
   --[[
   Adds a new button to a button group.
   Buttons added later take priority when checking for a coordinate. One can
@@ -72,9 +75,6 @@ function ButtonGroup:add(x, y, w, h, info, onClick, onEnter, onLeave, onDraw)
     h = h,
     info = info,
     onClick = onClick or nop,
-    onEnter = onEnter or nop,
-    onLeave = onLeave or nop,
-    onDraw = onDraw or nop,
     group = self
   }
   table.insert(self, button)
@@ -93,7 +93,7 @@ end
 
 function ButtonGroup:draw()
   for _, button in ipairs(self) do
-    button:onDraw()
+    self.onDrawButton(button)
   end
 end
 

@@ -15,44 +15,40 @@ end
 
 local function buttonDraw(button)
   local c = {love.graphics.getColor()}
-  love.graphics.setColor(button.info.colors[button.info.hovered])
+  if button.info.hovered then
+    love.graphics.setColor(button.info.activeColor)
+  else
+    love.graphics.setColor(button.info.inactiveColor)
+  end
   love.graphics.rectangle('fill', button.x, button.y, button.w, button.h)
   love.graphics.setColor(c)
 end
 
 function love.load()
-  group = lb.new()
-  group:add(
-    100, 100,
-    200, 200,
-    {
-      colors={
-        [false] = {0.2, 0.2, 0.2, 1},
-        [true] = {0.5, 0, 0, 1}
-      },
-      hovered = false,
-      id = 1
-    },
-    buttonClick,
+  group = lb.new(
     buttonEnter,
     buttonLeave,
     buttonDraw
   )
   group:add(
+    100, 100,
+    200, 200,
+    {
+      inactiveColor = {0.2, 0.2, 0.2, 1},
+      activeColor = {0.5, 0, 0, 1},
+      id = 1
+    },
+    buttonClick
+  )
+  group:add(
     180, 150,
     200, 200,
     {
-      colors={
-        [false] = {0.5, 0.5, 0.5, 1},
-        [true] = {0.3, 0.3, 0.8, 1}
-      },
-      hovered = false,
+      inactiveColor = {0.5, 0.5, 0.5, 1},
+      activeColor = {0.3, 0.3, 0.8, 1},
       id = 2
     },
-    buttonClick,
-    buttonEnter,
-    buttonLeave,
-    buttonDraw
+    buttonClick
   )
 end
 
