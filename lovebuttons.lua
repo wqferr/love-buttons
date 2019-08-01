@@ -50,8 +50,9 @@ local function updateHovered(buttonGroup, newHovered)
   end
 end
 
-function ButtonGroup.new(onEnterButton, onLeaveButton, onDrawButton)
+function ButtonGroup.new(info, onEnterButton, onLeaveButton, onDrawButton)
   local group = {
+    info = info,
     onEnterButton = onEnterButton,
     onLeaveButton = onLeaveButton,
     onDrawButton = onDrawButton
