@@ -30,25 +30,25 @@ function love.load()
     buttonLeave,
     buttonDraw
   )
-  group:add(
+  group:addButton(
+    buttonClick,
     100, 100,
     200, 200,
     {
       inactiveColor = {0.2, 0.2, 0.2, 1},
       activeColor = {0.5, 0, 0, 1},
       id = 1
-    },
-    buttonClick
+    }
   )
-  group:add(
+  group:addButton(
+    buttonClick,
     180, 150,
     200, 200,
     {
       inactiveColor = {0.5, 0.5, 0.5, 1},
       activeColor = {0.3, 0.3, 0.8, 1},
       id = 2
-    },
-    buttonClick
+    }
   )
 end
 

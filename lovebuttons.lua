@@ -50,7 +50,7 @@ local function updateHovered(buttonGroup, newHovered)
   end
 end
 
-function ButtonGroup.new(info, onEnterButton, onLeaveButton, onDrawButton)
+function ButtonGroup.new(onEnterButton, onLeaveButton, onDrawButton, info)
   local group = {
     info = info,
     onEnterButton = onEnterButton,
@@ -60,7 +60,7 @@ function ButtonGroup.new(info, onEnterButton, onLeaveButton, onDrawButton)
   return setmetatable(group, ButtonGroupMt)
 end
 
-function ButtonGroup:add(x, y, w, h, info, onClick)
+function ButtonGroup:addButton(onClick, x, y, w, h, info)
   --[[
   Adds a new button to a button group.
   Buttons added later take priority when checking for a coordinate. One can
@@ -70,12 +70,12 @@ function ButtonGroup:add(x, y, w, h, info, onClick)
   assertButtonArgs(x, y, w, h)
 
   local button = {
+    onClick = onClick or nop,
     x = x,
     y = y,
     w = w,
     h = h,
     info = info,
-    onClick = onClick or nop,
     group = self
   }
   table.insert(self, button)
